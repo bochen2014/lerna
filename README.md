@@ -1109,6 +1109,25 @@ new version(s) to the default [dist-tag](https://docs.npmjs.com/cli/dist-tag) (`
 This is not generally necessary, as Lerna will publish packages in topological
 order (all dependencies before dependents) by default.
 
+
+
+### precedence
+
+1. when no change happens in `packages` folder, no changes to publish;
+2. when package.json says ver = `1.0.2` , while associated commit tag says `2.0.0`, `pacakge.json` takes precedence
+
+`git lg`
+```sh
+* 844148c - (18 seconds ago) Publish - bochen (HEAD, tag: @wdpui/api-client-new@1.0.3, master)
+* 5e3319f - (37 seconds ago) chore(update packages itself): update - bochen
+* 4f3efd3 - (2 minutes ago) chore(update-package.json): update - bochen
+* aea5b5e - (6 minutes ago) Publish - bochen (tag: @wdpui/api-client-new@2.0.0)
+* 107c0cf - (6 minutes ago) chore(change-name): update - bochen
+* 25c4875 - (10 minutes ago) Publish - bochen (tag: @wdpui/api-client@1.0.1)
+* e7ebcc1 - (12 minutes ago) chore(test): update - bochen
+# package starts from `npm init`, so version defaults to '1.0.0'
+```
+
 ### README Badge
 Using Lerna? Add a README badge to show it off: [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 ```
