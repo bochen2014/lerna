@@ -279,20 +279,29 @@ export default class PublishCommand extends Command {
   };
 
   execute(callback) {
+    //###################################################################################
+    // this is the callback passed to `initialize` (i.e. version bump)
+    // tag mainloop; main loop; mainloop3; second half ; git commit ; git tag
+    debugger;
+
+
     if (!this.repository.isIndependent() && !this.options.canary) {
       this.updateVersionInLernaJson();
     }
 
-    this.updateUpdatedPackages();
+    //#####################################################
+    // package.json and CHANGELOG.md are git added here;
+              this.updateUpdatedPackages();  // git add . 
+    //######################################################
 
-    if (this.gitEnabled) {
-      this.commitAndTagUpdates();
+    if (this.gitEnabled) {  //     this.gitEnabled = !(this.options.canary || this.options.skipGit);
+      this.commitAndTagUpdates(); // git commit && git tag xxx
     }
 
     if (this.options.skipNpm) {
       callback(null, true);
     } else {
-      this.publishPackagesToNpm(callback);
+      this.publishPackagesToNpm(callback);  // npm publish && git push
     }
   }
 
@@ -319,9 +328,13 @@ export default class PublishCommand extends Command {
           return;
         }
 
+        //##################################################################################
         if (this.gitEnabled) {
-          this.logger.info("git", "Pushing tags...");
+          debugger; // mainloop push; main loop; small loop; tiny loop
+          this.logger.info("git", "Pushing tags.. git push here; git push; git push --tags.");
           GitUtilities.pushWithTags(this.gitRemote, this.tags, this.execOpts);
+        //##################################################################################
+          
         }
 
         const message = this.packagesToPublish.map(pkg => ` - ${pkg.name}@${pkg.version}`);
@@ -657,6 +670,7 @@ export default class PublishCommand extends Command {
     // exec version lifecycle in root (after all updates)
     this.runSyncScriptInPackage(rootPkg, "version");
 
+    // this.gitEnabled = !(this.options.canary || this.options.skipGit);
     if (this.gitEnabled) {
       changedFiles.forEach(file => GitUtilities.addFile(file, this.execOpts));
     }

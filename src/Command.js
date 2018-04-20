@@ -359,6 +359,7 @@ export default class Command {
   }
 
   runCommand(callback) {
+    //mainloop; the main loop; outer most loop; initialize  -> execute; out most; outermost; 
     this._attempt(
       "initialize",
       () => {
@@ -452,6 +453,7 @@ export default class Command {
   }
 
   execute() {
+    // abstract method; overridden in derived classes , e.g. PublishCommand::execute
     throw new Error("command.execute() needs to be implemented.");
   }
 
