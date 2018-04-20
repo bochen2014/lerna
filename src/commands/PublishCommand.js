@@ -141,6 +141,12 @@ export const builder = {
     describe: "Specify which branches to allow publishing from.",
     type: "array",
   },
+  "debug-bump": {
+    group: "Command Options:",
+    describe: "bochen:  debug conventional-recommended-bump.",
+    type: "boolean",
+    default: false
+  }
 };
 
 export default class PublishCommand extends Command {
@@ -169,6 +175,8 @@ export default class PublishCommand extends Command {
   }
 
   initialize(callback) {
+    debugger; // Entry point; mainloop; main loop
+
     this.gitRemote = this.options.gitRemote || "origin";
     this.gitEnabled = !(this.options.canary || this.options.skipGit);
 
@@ -217,7 +225,10 @@ export default class PublishCommand extends Command {
       }
     }
 
-    this.updates = new UpdatedPackagesCollector(this).getUpdates();
+    //###################################################################################
+    this.updates = new UpdatedPackagesCollector(this).getUpdates();  // check updates
+    //###################################################################################
+    
 
     this.packagesToPublish = this.updates.map(update => update.package).filter(pkg => !pkg.isPrivate());
 
@@ -236,11 +247,15 @@ export default class PublishCommand extends Command {
     }
 
     if (!this.updates.length) {
+      debugger; // no changes to publish
       this.logger.info("No updated packages to publish.");
       callback(null, false);
       return;
     }
 
+    // ######################################################
+    // bump packages starts
+    debugger;
     this.getVersionsForUpdates((err, { version, versions }) => {
       if (err) {
         callback(err);
@@ -320,6 +335,7 @@ export default class PublishCommand extends Command {
     const { canary, cdVersion, conventionalCommits, preid, repoVersion } = this.options;
     const independentVersions = this.repository.isIndependent();
 
+    // cd-version case, ignore;
     if (cdVersion && !canary) {
       if (independentVersions) {
         // Independent Semver Keyword Mode
@@ -338,6 +354,8 @@ export default class PublishCommand extends Command {
       return callback(null, { version });
     }
 
+    debugger;  //main loop bump; mainloop2; mainloop bump;
+    // force-version case
     if (repoVersion) {
       return callback(null, {
         version: repoVersion,
@@ -361,14 +379,15 @@ export default class PublishCommand extends Command {
       return callback(null, { version });
     }
 
-    if (conventionalCommits) {
+    if (conventionalCommits) { //common-ui case;
       if (independentVersions) {
         // Independent Conventional-Commits Mode
         const versions = {};
         this.recommendVersions(
-          this.updates,
-          ConventionalCommitUtilities.recommendIndependentVersion,
+          this.updates, // packages that lerna thinks need to be bumped;
+          ConventionalCommitUtilities.recommendIndependentVersion /* the functor here is real worker function*/,
           versionBump => {
+            // here is where the version got bumped!!
             versions[versionBump.pkg.name] = versionBump.recommendedVersion;
           }
         );
@@ -376,8 +395,8 @@ export default class PublishCommand extends Command {
         return callback(null, { versions });
       }
 
-      // Non-Independent Conventional-Commits Mode
-      const currentFixedVersion = this.repository.lernaJson.version;
+      // react-gel case; fixed version pattern;
+      const currentFixedVersion = this.repository.lernaJson.version; //fixed version case, read from `lerna.json` file;
 
       this.updates.forEach(update => {
         const pkg = update.package;
