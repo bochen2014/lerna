@@ -481,6 +481,8 @@ export default class PublishCommand extends Command {
     });
   }
 
+  // this is how canary version is calculated;
+  // canary loop; small loop; canary new version; github issues;  .preid; _preid; "preid", 'preid' , 'minor' , "minor", 
   getCanaryVersion(version, _preid) {
     // FIXME: this complicated defaulting should be done in yargs option.coerce()
     const preid = _preid == null || typeof _preid !== "string" ? "alpha" : _preid;
