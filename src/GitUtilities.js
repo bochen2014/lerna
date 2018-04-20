@@ -110,12 +110,12 @@ export default class GitUtilities {
     return firstCommit;
   }
 
+  //############################  git push and git describe #########################################
   static pushWithTags(remote, tags, opts) {
     log.silly("pushWithTags", [remote, tags]);
-
+    debugger;
     const branch = GitUtilities.getCurrentBranch(opts);
-    ChildProcessUtilities.execSync("git", ["push", remote, branch], opts);
-    ChildProcessUtilities.execSync("git", ["push", remote].concat(tags), opts);
+    ChildProcessUtilities.execSync("git", ["push", "--no-verify", remote, branch].concat(tags), opts);
   }
 
   static getLastTag(opts) {
@@ -127,6 +127,8 @@ export default class GitUtilities {
     return lastTag;
   }
 
+  //##################################################################################################3
+  
   static describeTag(commit, opts) {
     log.silly("describeTag", commit);
 
@@ -137,15 +139,19 @@ export default class GitUtilities {
   }
 
   static diffSinceIn(since, location, opts) {
+    // ########## lerna's understanding of what has chagned;
+    // debugger; // you might want to debug here as well;
+    // or simply run `git diff --name-only $(git describe --tag --abbrev=0) packates/your-folder-path`
+    // on your local
     const formattedLocation = path.relative(opts.cwd, location).replace(/\\/g, "/");
-    log.silly("diffSinceIn", since, formattedLocation);
+    log.silly("realdiff; bochen; diffSinceIn", since, formattedLocation);
 
     const diff = ChildProcessUtilities.execSync(
       "git",
       ["diff", "--name-only", since, "--", formattedLocation],
       opts
     );
-    log.silly("diff", diff);
+    log.silly("realdiff; diffSinceIn: git diff --name-only $(git describe --tag --abbrev=0) packates/your-folder-path", diff);
 
     return diff;
   }

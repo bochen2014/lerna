@@ -18,29 +18,38 @@ const RECOMMEND_CLI = require.resolve("conventional-recommended-bump/cli");
 const CHANGELOG_CLI = require.resolve("conventional-changelog-cli/cli");
 
 export default class ConventionalCommitUtilities {
-  static recommendIndependentVersion(pkg, opts) {
-    // `-p` here is overridden because `conventional-recommended-bump`
-    // cannot accept custom preset.
+  //########################################################################################################################
+
+  static recommendIndependentVersion(pkg, opts) { //common-ui case;
     const args = [RECOMMEND_CLI, "-l", pkg.name, "--commit-path", pkg.location, "-p", "angular"];
-    return ConventionalCommitUtilities.recommendVersion(pkg, opts, "recommendIndependentVersion", args);
+
+    //yarn conventional-recommended-bump -l @wdpui/common-detect-web-view  --commmit-path packages/detect-web-view  -p angular
+    return ConventionalCommitUtilities.recommendVersion(pkg, opts, "recommendIndependentVersion", args); // return either 'major'/'minor'/'patch'
   }
 
-  static recommendFixedVersion(pkg, opts) {
-    // `-p` here is overridden because `conventional-recommended-bump`
-    // cannot accept custom preset.
+  static recommendFixedVersion(pkg, opts) { //react-gel case;
     const args = [RECOMMEND_CLI, "--commit-path", pkg.location, "-p", "angular"];
     return ConventionalCommitUtilities.recommendVersion(pkg, opts, "recommendFixedVersion", args);
   }
 
   static recommendVersion(pkg, opts, type, args) {
-    log.silly(type, "for %s at %s", pkg.name, pkg.location);
+    debugger; // here conventional-recommended-bump is doing his work!!
 
+    log.silly(type, "realbump: for %s at %s", pkg.name, pkg.location);
+
+    // node ../../node_modules/conventional-recommended-bump/cli.js -l @wdpui/gel-button --commmit-path packages/gel-button -p angular 
     const recommendedBump = ChildProcessUtilities.execSync(process.execPath, args, opts);
 
-    log.verbose(type, "increment %s by %s", pkg.version, recommendedBump);
-    return semver.inc(pkg.version, recommendedBump);
+    log.verbose(type, "realbump: increment %s by %s", pkg.version, recommendedBump);
+    // should use corp-semantic-release's way to do it;
+    // shouldn't relay on local packages.json 's version as it's higly like to be out-of-sync with npm registry; (artifactory)
+    
+    // node -p "require('semver').inc('1.0.0', 'patch')"
+    return semver.inc(pkg.version/*  always use local package.json version, should take npm info xx versions instead*/, recommendedBump);
   }
 
+//########################################################################################################################
+  
   static updateIndependentChangelog(pkg, opts) {
     const pkgJsonLocation = path.join(pkg.location, "package.json");
     const args = [
