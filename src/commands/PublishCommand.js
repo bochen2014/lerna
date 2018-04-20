@@ -33,7 +33,7 @@ const cdVersionOptions = ["major", "minor", "patch", "premajor", "preminor", "pr
 
 const cdVersionOptionString = `'${cdVersionOptions.slice(0, -1).join("', '")}', or '${
   cdVersionOptions[cdVersionOptions.length - 1]
-}'.`;
+  }'.`;
 
 export const builder = {
   canary: {
@@ -228,7 +228,7 @@ export default class PublishCommand extends Command {
     //###################################################################################
     this.updates = new UpdatedPackagesCollector(this).getUpdates();  // check updates
     //###################################################################################
-    
+
 
     this.packagesToPublish = this.updates.map(update => update.package).filter(pkg => !pkg.isPrivate());
 
@@ -236,11 +236,11 @@ export default class PublishCommand extends Command {
     try {
       this.batchedPackagesToPublish = this.toposort
         ? PackageUtilities.topologicallyBatchPackages(this.packagesToPublish, {
-            // Don't sort based on devDependencies because that would increase the chance of dependency cycles
-            // causing less-than-ideal a publishing order.
-            depsOnly: true,
-            rejectCycles: this.options.rejectCycles,
-          })
+          // Don't sort based on devDependencies because that would increase the chance of dependency cycles
+          // causing less-than-ideal a publishing order.
+          depsOnly: true,
+          rejectCycles: this.options.rejectCycles,
+        })
         : [this.packagesToPublish];
     } catch (e) {
       return callback(e);
@@ -256,23 +256,27 @@ export default class PublishCommand extends Command {
     // ######################################################
     // bump packages starts
     debugger;
-    this.getVersionsForUpdates((err, { version, versions }) => {
-      if (err) {
-        callback(err);
-        return;
-      }
 
-      this.masterVersion = version;
-      this.updatesVersions =
-        versions ||
-        this.updates.reduce((acc, update) => {
-          acc[update.package.name] = version;
-          return acc;
-        }, {});
+    this.getVersionsForUpdates(this.afterVersionCalculated);
 
-      this.confirmVersions(callback);
-    });
   }
+
+  afterVersionCalculated(err, { version /*fixed version*/, versions /*independent*/ }) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    this.masterVersion = version;
+    this.updatesVersions =
+      versions ||
+      this.updates.reduce((acc, update) => {
+        acc[update.package.name] = version;
+        return acc;
+      }, {});
+
+    this.confirmVersions(callback);
+  };
 
   execute(callback) {
     if (!this.repository.isIndependent() && !this.options.canary) {
@@ -522,7 +526,7 @@ export default class PublishCommand extends Command {
             const defaultVersion = semver.inc(currentVersion, "prerelease", existingId);
             const prompt = `(default: ${
               existingId ? `"${existingId}"` : "none"
-            }, yielding ${defaultVersion})`;
+              }, yielding ${defaultVersion})`;
 
             // TODO: allow specifying prerelease identifier as CLI option to skip the prompt
             PromptUtilities.input(
