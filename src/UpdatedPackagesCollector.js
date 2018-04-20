@@ -63,7 +63,7 @@ export default class UpdatedPackagesCollector {
   collectUpdatedPackages() {
     this.logger.info("", "Checking for updated packages...");
     
-    debugger;  // check main loop; mainloop1;
+    debugger;  // lerna detect changes ; small loop; main loop; mainloop1;
     const { execOpts, options } = this;
     const { canary } = options;
     let { since } = options;

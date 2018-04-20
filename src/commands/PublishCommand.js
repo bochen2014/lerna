@@ -175,7 +175,7 @@ export default class PublishCommand extends Command {
   }
 
   initialize(callback) {
-    debugger; // Entry point; mainloop; main loop
+    debugger; // bump versoin main loop; first half; 'initialize'; 'execute' ; virtual method; abstract method; mainloop; main loop
 
     this.gitRemote = this.options.gitRemote || "origin";
     this.gitEnabled = !(this.options.canary || this.options.skipGit);
@@ -254,7 +254,7 @@ export default class PublishCommand extends Command {
     }
 
     // ######################################################
-    // bump packages starts
+    // we have got packages that need bump, now verion bump starts (will delegat to conventional-recommended-bump)
     debugger;
 
     this.getVersionsForUpdates(this.afterVersionCalculated);
@@ -280,9 +280,10 @@ export default class PublishCommand extends Command {
 
   execute(callback) {
     //###################################################################################
-    // this is the callback passed to `initialize` (i.e. version bump)
+    // this is the real callback passed to `initialize` (i.e. version bump main loop; first half)
+    // note that this is a overridden of parent class 's abstract method;
     // tag mainloop; main loop; mainloop3; second half ; git commit ; git tag
-    debugger;
+    debugger; // git add . => git commit /git tag => npm publish => git push && git push origin --tags
 
 
     if (!this.repository.isIndependent() && !this.options.canary) {
@@ -330,7 +331,7 @@ export default class PublishCommand extends Command {
 
         //##################################################################################
         if (this.gitEnabled) {
-          debugger; // mainloop push; main loop; small loop; tiny loop
+          debugger; // git push inside npmPublish function. REALLY BAD NAMING!!!!
           this.logger.info("git", "Pushing tags.. git push here; git push; git push --tags.");
           GitUtilities.pushWithTags(this.gitRemote, this.tags, this.execOpts);
         //##################################################################################
@@ -371,7 +372,7 @@ export default class PublishCommand extends Command {
       return callback(null, { version });
     }
 
-    debugger;  //main loop bump; mainloop2; mainloop bump;
+    debugger;  //main loop; real bump loop; here is the starting point of real versoin bump;
     // force-version case
     if (repoVersion) {
       return callback(null, {

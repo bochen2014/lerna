@@ -35,12 +35,12 @@ export default class ConventionalCommitUtilities {
   static recommendVersion(pkg, opts, type, args) {
     debugger; // here conventional-recommended-bump is doing his work!!
 
-    log.silly(type, "realbump: for %s at %s", pkg.name, pkg.location);
+    log.silly(type, "semver bump: for %s at %s", pkg.name, pkg.location);
 
     // node ../../node_modules/conventional-recommended-bump/cli.js -l @wdpui/gel-button --commmit-path packages/gel-button -p angular 
     const recommendedBump = ChildProcessUtilities.execSync(process.execPath, args, opts);
 
-    log.verbose(type, "realbump: increment %s by %s", pkg.version, recommendedBump);
+    log.verbose(type, "semver bump: increment %s by %s", pkg.version, recommendedBump);
     // should use corp-semantic-release's way to do it;
     // shouldn't relay on local packages.json 's version as it's higly like to be out-of-sync with npm registry; (artifactory)
     

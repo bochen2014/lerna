@@ -113,7 +113,6 @@ export default class GitUtilities {
   //############################  git push and git describe #########################################
   static pushWithTags(remote, tags, opts) {
     log.silly("pushWithTags", [remote, tags]);
-    debugger;
     const branch = GitUtilities.getCurrentBranch(opts);
     ChildProcessUtilities.execSync("git", ["push", "--no-verify", remote, branch].concat(tags), opts);
   }
