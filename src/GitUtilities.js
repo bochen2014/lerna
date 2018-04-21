@@ -138,19 +138,18 @@ export default class GitUtilities {
   }
 
   static diffSinceIn(since, location, opts) {
-    // ########## lerna's understanding of what has chagned;
-    // debugger; // you might want to debug here as well;
-    // or simply run `git diff --name-only $(git describe --tag --abbrev=0) packates/your-folder-path`
-    // on your local
     const formattedLocation = path.relative(opts.cwd, location).replace(/\\/g, "/");
-    log.silly("realdiff; bochen; diffSinceIn", since, formattedLocation);
+    log.silly("real diff; diff main loop", since, formattedLocation);
 
+    // lerna detect changes; realdiff; real diff; lerna diff ; real diff mainloop; main loop; small loop
+    debugger; // git diff --name-only $(git describe --tag --abbrev=0) packates/your-folder-path
+    
     const diff = ChildProcessUtilities.execSync(
       "git",
       ["diff", "--name-only", since, "--", formattedLocation],
       opts
     );
-    log.silly("realdiff; diffSinceIn: git diff --name-only $(git describe --tag --abbrev=0) packates/your-folder-path", diff);
+    log.silly("git diff --name-only $(git describe --tag --abbrev=0) packates/your-folder-path", diff);
 
     return diff;
   }
