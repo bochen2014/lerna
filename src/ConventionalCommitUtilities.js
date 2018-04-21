@@ -41,6 +41,10 @@ export default class ConventionalCommitUtilities {
       console.log(JSON.stringify(args) + '    -- options    ' + JSON.stringify(opts))
     }
     // node ../../node_modules/conventional-recommended-bump/cli.js -l @wdpui/gel-button --commmit-path packages/gel-button -p angular 
+    // args: ["/opt/git/lerna/node_modules/conventional-recommended-bump/cli.js",
+    //         "-l","@lernatest/gel-button",
+    //         "--commit-path","/opt/git/lerna-muckaround/packages/button",
+    //         "-p","angular" ]
     const recommendedBump = ChildProcessUtilities.execSync(process.execPath, args, opts);
 
     log.verbose(type, "conventional-recommended-bump: increment %s by %s", pkg.version, recommendedBump);

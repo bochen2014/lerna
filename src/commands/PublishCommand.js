@@ -373,8 +373,8 @@ export default class PublishCommand extends Command {
     }
 
     debugger;  //main loop; real bump loop; here is the starting point of real versoin bump;
-    // force-version case
-    if (repoVersion) {
+    
+    if (repoVersion) {  // --repo-version 0.1000.0
       return callback(null, {
         version: repoVersion,
       });
