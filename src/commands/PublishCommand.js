@@ -306,11 +306,23 @@ export default class PublishCommand extends Command {
     if (this.options.skipNpm) {
       callback(null, true);
     } else {
-      this.publishPackagesToNpm(callback);  // npm publish && git push
+      this.publishPackagesToNpmAndPushGit2Origin(callback);  // npm publish && git push
     }
   }
 
-  publishPackagesToNpm(callback) {
+  publishPackagesToNpmAndPushGit2Origin(callback) {
+    this.logger.info("publish", "Publishing packages to npm...");
+    
+    //################################# git push ##########################################
+    if (this.gitEnabled) {
+      debugger; // git push inside npmPublish function. REALLY BAD NAMING!!!!
+      this.logger.info("git", "git push pushWithTags begin  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      GitUtilities.pushWithTags(this.gitRemote, this.tags, this.execOpts);
+      this.logger.info("git", "git push pushWithTags finish <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+      
+      //##################################################################################
+    }
+
     this.logger.info("publish", "Publishing packages to npm...");
 
     this.npmPublish(publishError => {
@@ -332,16 +344,6 @@ export default class PublishCommand extends Command {
           callback(updateError);
           return;
         }
-
-        //################################# git push ##########################################
-        if (this.gitEnabled) {
-          debugger; // git push inside npmPublish function. REALLY BAD NAMING!!!!
-          this.logger.info("git", "Pushing tags.. git push here; git push; git push --tags.");
-          GitUtilities.pushWithTags(this.gitRemote, this.tags, this.execOpts);
-          //##################################################################################
-
-        }
-
         const message = this.packagesToPublish.map(pkg => ` - ${pkg.name}@${pkg.version}`);
 
         output("Successfully published:");
@@ -755,7 +757,7 @@ export default class PublishCommand extends Command {
   }
 
   npmPublish(callback) {
-    const tracker = this.logger.newItem("npmPublish");
+    const tracker = this.logger.newItem("npmPublish starts here >>>>>>>>>>>>>>>>>>>");
 
     // if we skip temp tags we should tag with the proper value immediately
     // therefore no updates will be needed
@@ -772,6 +774,7 @@ export default class PublishCommand extends Command {
       pkg => {
         let attempts = 0;
 
+        // each function callback
         const run = cb => {
           tracker.verbose("publishing", pkg.name);
 
@@ -798,6 +801,7 @@ export default class PublishCommand extends Command {
               this.logger.verbose("publish error", err.message);
               run(cb);
             } else {
+              // bamboo npm publish error here :(((((((((((((((((((
               this.logger.error("publish", "Ran out of retries while publishing", pkg.name, err.stack || err);
               cb(err);
             }
@@ -807,6 +811,7 @@ export default class PublishCommand extends Command {
         return run;
       },
       this.concurrency,
+      // all functions complete callback;
       err => {
         tracker.finish();
         callback(err);
