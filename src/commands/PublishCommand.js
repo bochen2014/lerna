@@ -257,13 +257,17 @@ export default class PublishCommand extends Command {
     // we have got packages that need bump, now verion bump starts (will delegat to conventional-recommended-bump)
     debugger;
 
-    this.getVersionsForUpdates(this.afterVersionCalculated);
+    this.getVersionsForUpdates(this.afterVersionBumped.bind(this), callback);
 
   }
 
-  afterVersionCalculated(err, { version /*fixed version*/, versions /*independent*/ }) {
+  afterVersionBumped(err,
+    { version /*fixed version*/, versions /*independent*/ },
+    onInitComplete /*init: bump ver ; exec: git add/commit/tag + npm publish */) {
+
+    debugger;
     if (err) {
-      callback(err);
+      onInitComplete(err);
       return;
     }
 
@@ -275,7 +279,7 @@ export default class PublishCommand extends Command {
         return acc;
       }, {});
 
-    this.confirmVersions(callback);
+    this.confirmVersions(onInitComplete);
   };
 
   execute(callback) {
@@ -292,7 +296,7 @@ export default class PublishCommand extends Command {
 
     //#####################################################
     // package.json and CHANGELOG.md are git added here;
-              this.updateUpdatedPackages();  // git add . 
+    this.updateUpdatedPackages();  // git add . 
     //######################################################
 
     if (this.gitEnabled) {  //     this.gitEnabled = !(this.options.canary || this.options.skipGit);
@@ -334,8 +338,8 @@ export default class PublishCommand extends Command {
           debugger; // git push inside npmPublish function. REALLY BAD NAMING!!!!
           this.logger.info("git", "Pushing tags.. git push here; git push; git push --tags.");
           GitUtilities.pushWithTags(this.gitRemote, this.tags, this.execOpts);
-        //##################################################################################
-          
+          //##################################################################################
+
         }
 
         const message = this.packagesToPublish.map(pkg => ` - ${pkg.name}@${pkg.version}`);
@@ -349,7 +353,7 @@ export default class PublishCommand extends Command {
     });
   }
 
-  getVersionsForUpdates(callback) {
+  getVersionsForUpdates(callback, onInitComplete) {
     const { canary, cdVersion, conventionalCommits, preid, repoVersion } = this.options;
     const independentVersions = this.repository.isIndependent();
 
@@ -364,20 +368,20 @@ export default class PublishCommand extends Command {
           versions[name] = semver.inc(version, cdVersion, preid);
         });
 
-        return callback(null, { versions });
+        return callback(null, { versions }, onInitComplete);
       }
 
       // Non-Independent Semver Keyword Mode
       const version = semver.inc(this.globalVersion, cdVersion, preid);
-      return callback(null, { version });
+      return callback(null, { version }, onInitComplete);
     }
 
     debugger;  //main loop; real bump loop; here is the starting point of real versoin bump;
-    
+
     if (repoVersion) {  // --repo-version 0.1000.0
       return callback(null, {
         version: repoVersion,
-      });
+      }, onInitComplete);
     }
 
     if (canary) {
@@ -389,12 +393,12 @@ export default class PublishCommand extends Command {
           versions[name] = this.getCanaryVersion(version, canary);
         });
 
-        return callback(null, { versions });
+        return callback(null, { versions }, onInitComplete);
       }
 
       // Non-Independent Canary Mode
       const version = this.getCanaryVersion(this.globalVersion, canary);
-      return callback(null, { version });
+      return callback(null, { version }, onInitComplete);
     }
 
     if (conventionalCommits) { //common-ui case;
@@ -410,7 +414,7 @@ export default class PublishCommand extends Command {
           }
         );
 
-        return callback(null, { versions });
+        return callback(null, { versions }, onInitComplete);
       }
 
       // react-gel case; fixed version pattern;
@@ -434,7 +438,7 @@ export default class PublishCommand extends Command {
         }
       });
 
-      return callback(null, { version });
+      return callback(null, { version }, onInitComplete);
     }
 
     if (independentVersions) {
@@ -447,30 +451,30 @@ export default class PublishCommand extends Command {
         },
         (err, versions) => {
           if (err) {
-            return callback(err);
+            return callback(err, null, onInitComplete);
           }
 
           this.updates.forEach((update, index) => {
             versions[update.package.name] = versions[index];
           });
 
-          return callback(null, { versions });
+          return callback(null, { versions }, onInitComplete);
         }
       );
     } else {
       // Non-Independent Non-Canary Mode
       this.promptVersion(null, this.globalVersion, (err, version) => {
         if (err) {
-          return callback(err);
+          return callback(err, null, onInitComplete);
         }
-        return callback(null, { version });
+        return callback(null, { version }, onInitComplete);
       });
     }
   }
 
-  recommendVersions(updates, 
+  recommendVersions(updates,
     // go to ConventionalCommitUtilities to see conventional-recommended-bump wrapper;
-    recommendVersionFn /*either RecommendFixedVersion or RecommendIndepedentVersion*/, 
+    recommendVersionFn /*either RecommendFixedVersion or RecommendIndepedentVersion*/,
     callback) {
     updates.forEach(update => {
       const pkg = {
