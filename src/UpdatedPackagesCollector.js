@@ -83,8 +83,10 @@ export default class UpdatedPackagesCollector {
     const updatedPackages = {};
 
     const registerUpdated = pkg => {
-      this.logger.verbose("updated", pkg.name);
-      updatedPackages[pkg.name] = pkg;
+      if(!updatedPackages[pkg.name]){
+        this.logger.verbose("updated", pkg.name);
+        updatedPackages[pkg.name] = pkg;
+      }
     };
 
     const forced = getForcedPackages(options);
@@ -104,9 +106,13 @@ export default class UpdatedPackagesCollector {
         .forEach(registerUpdated);
     }
 
+
     // #######################################################################
     // here is the packages that lerna thinks need to be bumped;
     // we now have updated package list
+    if(Object.keys(updatedPackages).length>0 && !this.repository.isIndependent()){ //fixed pattern and change detected;
+      this.packages.forEach(registerUpdated); // need to bump all together;
+    }
     return updatedPackages;
     // #######################################################################
   }
