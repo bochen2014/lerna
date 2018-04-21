@@ -63,7 +63,7 @@ export default class UpdatedPackagesCollector {
   collectUpdatedPackages() {
     this.logger.info("", "Checking for updated packages...");
 
-    // lerna detect changes ; small loop; main loop; mainloop1;
+    // lerna detect changes ; small loop; detect main loop; mainloop1;
     const { execOpts, options } = this;
     const { canary } = options;
     let { since } = options;
@@ -90,13 +90,13 @@ export default class UpdatedPackagesCollector {
     const forced = getForcedPackages(options);
 
     if (!since || forced.has("*")) {
-      // first time publish, or force-publish=*
+      // first time publish, or --force-publish=*
       this.packages.forEach(registerUpdated);
     } else {
       this.packages
         .filter(pkg => {
           if (forced.has(pkg.name)) {
-            // force-publish=detect-web-view
+            // --force-publish=detect-web-view
             return true;
           }
           return this.hasDiffSinceThatIsntIgnored(pkg, since); // git diff $(git describe --tag --abbrev=0) to get diff result

@@ -175,7 +175,7 @@ export default class PublishCommand extends Command {
   }
 
   initialize(callback) {
-    // bump versoin main loop; first half; 'initialize'; 'execute' ; virtual method; abstract method; mainloop; main loop
+    // bump main loop; first half; 'initialize'; 'execute' ; virtual method; abstract method; mainloop; main loop
 
     this.gitRemote = this.options.gitRemote || "origin";
     this.gitEnabled = !(this.options.canary || this.options.skipGit);
@@ -245,6 +245,8 @@ export default class PublishCommand extends Command {
       return callback(e);
     }
 
+    // detect main loop finishes; 
+    // ###################################################################################
     if (!this.updates.length) {
       // no changes to publish
       this.logger.info("No updated packages to publish.");
@@ -252,9 +254,8 @@ export default class PublishCommand extends Command {
       return;
     }
 
-    // ######################################################
+    // ###################################################################################
     // we have got packages that need bump, now verion bump starts (will delegat to conventional-recommended-bump)
-
     this.getVersionsForUpdates(this.afterVersionBumped.bind(this), callback);
   }
 
