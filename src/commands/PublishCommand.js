@@ -333,7 +333,7 @@ export default class PublishCommand extends Command {
           return;
         }
 
-        //##################################################################################
+        //################################# git push ##########################################
         if (this.gitEnabled) {
           debugger; // git push inside npmPublish function. REALLY BAD NAMING!!!!
           this.logger.info("git", "Pushing tags.. git push here; git push; git push --tags.");

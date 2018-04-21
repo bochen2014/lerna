@@ -110,7 +110,7 @@ export default class GitUtilities {
     return firstCommit;
   }
 
-  //############################  git push and git describe #########################################
+  //#######################################################################################################
   static pushWithTags(remote, tags, opts) {
     log.silly("pushWithTags", [remote, tags]);
     const branch = GitUtilities.getCurrentBranch(opts);
@@ -126,7 +126,7 @@ export default class GitUtilities {
     return lastTag;
   }
 
-  //##################################################################################################3
+  //#######################################################################################################
   
   static describeTag(commit, opts) {
     log.silly("describeTag", commit);
