@@ -468,7 +468,10 @@ export default class PublishCommand extends Command {
     }
   }
 
-  recommendVersions(updates, recommendVersionFn, callback) {
+  recommendVersions(updates, 
+    // go to ConventionalCommitUtilities to see conventional-recommended-bump wrapper;
+    recommendVersionFn /*either RecommendFixedVersion or RecommendIndepedentVersion*/, 
+    callback) {
     updates.forEach(update => {
       const pkg = {
         name: update.package.name,
@@ -476,6 +479,8 @@ export default class PublishCommand extends Command {
         location: update.package.location,
       };
 
+
+      this.changelogOpts['debug-bump'] == this.options['debug-bump'];
       const recommendedVersion = recommendVersionFn(pkg, this.changelogOpts);
       callback({ pkg, recommendedVersion });
     });
