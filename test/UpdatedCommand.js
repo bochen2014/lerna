@@ -55,8 +55,7 @@ describe("UpdatedCommand", async () => {
       initFixture("UpdatedCommand/basic").then(dir => {
         testDir = dir;
         lernaUpdated = run(testDir);
-      })
-    );
+      }));
 
     it("should list changes", async () => {
       await setupGitChanges(testDir, ["packages/package-2/random-file"]);
@@ -138,8 +137,7 @@ describe("UpdatedCommand", async () => {
       initFixture("UpdatedCommand/circular").then(dir => {
         testDir = dir;
         lernaUpdated = run(testDir);
-      })
-    );
+      }));
 
     it("should list changes", async () => {
       await setupGitChanges(testDir, ["packages/package-3/random-file"]);

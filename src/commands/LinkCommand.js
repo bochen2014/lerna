@@ -36,7 +36,12 @@ export default class LinkCommand extends Command {
   }
 
   execute(callback) {
-    const { packages, packageGraph, logger, options: { forceLocal } } = this;
+    const {
+      packages,
+      packageGraph,
+      logger,
+      options: { forceLocal },
+    } = this;
     PackageUtilities.symlinkPackages(packages, packageGraph, logger, forceLocal, callback);
   }
 }

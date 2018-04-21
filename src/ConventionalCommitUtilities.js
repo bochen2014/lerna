@@ -18,16 +18,18 @@ const RECOMMEND_CLI = require.resolve("conventional-recommended-bump/cli");
 const CHANGELOG_CLI = require.resolve("conventional-changelog-cli/cli");
 
 export default class ConventionalCommitUtilities {
-  //########################################################################################################################
+  // ########################################################################################################################
 
-  static recommendIndependentVersion(pkg, opts) { //common-ui case;
+  static recommendIndependentVersion(pkg, opts) {
+    // common-ui case;
     const args = [RECOMMEND_CLI, "-l", pkg.name, "--commit-path", pkg.location, "-p", "angular"];
 
-    //yarn conventional-recommended-bump -l @wdpui/common-detect-web-view  --commmit-path packages/detect-web-view  -p angular
+    // yarn conventional-recommended-bump -l @wdpui/common-detect-web-view  --commmit-path packages/detect-web-view  -p angular
     return ConventionalCommitUtilities.recommendVersion(pkg, opts, "recommendIndependentVersion", args); // return either 'major'/'minor'/'patch'
   }
 
-  static recommendFixedVersion(pkg, opts) { //react-gel case;
+  static recommendFixedVersion(pkg, opts) {
+    // react-gel case;
     const args = [RECOMMEND_CLI, "--commit-path", pkg.location, "-p", "angular"];
     return ConventionalCommitUtilities.recommendVersion(pkg, opts, "recommendFixedVersion", args);
   }
@@ -35,12 +37,12 @@ export default class ConventionalCommitUtilities {
   static recommendVersion(pkg, opts, type, args) {
     log.silly(type, "conventional-recommended-bump: for %s at %s", pkg.name, pkg.location);
 
-    debugger; // here conventional-recommended-bump is doing his work!!
-    if(opts['debug-bump']){
-      args.unshift('--inspect-brk')
-      console.log(JSON.stringify(args) + '    -- options    ' + JSON.stringify(opts))
+    // here conventional-recommended-bump is doing his work!!
+    if (opts["debug-bump"]) {
+      args.unshift("--inspect-brk");
+      console.log(`${JSON.stringify(args)}    -- options    ${JSON.stringify(opts)}`);
     }
-    // node ../../node_modules/conventional-recommended-bump/cli.js -l @wdpui/gel-button --commmit-path packages/gel-button -p angular 
+    // node ../../node_modules/conventional-recommended-bump/cli.js -l @wdpui/gel-button --commmit-path packages/gel-button -p angular
     // args: ["/opt/git/lerna/node_modules/conventional-recommended-bump/cli.js",
     //         "-l","@lernatest/gel-button",
     //         "--commit-path","/opt/git/lerna-muckaround/packages/button",
@@ -50,13 +52,16 @@ export default class ConventionalCommitUtilities {
     log.verbose(type, "conventional-recommended-bump: increment %s by %s", pkg.version, recommendedBump);
     // should use corp-semantic-release's way to do it;
     // shouldn't relay on local packages.json 's version as it's higly like to be out-of-sync with npm registry; (artifactory)
-    
+
     // node -p "require('semver').inc('1.0.0', 'patch')"
-    return semver.inc(pkg.version/*  always use local package.json version, should take npm info xx versions instead*/, recommendedBump);
+    return semver.inc(
+      pkg.version /*  always use local package.json version, should take npm info xx versions instead */,
+      recommendedBump
+    );
   }
 
-//########################################################################################################################
-  
+  // ########################################################################################################################
+
   static updateIndependentChangelog(pkg, opts) {
     const pkgJsonLocation = path.join(pkg.location, "package.json");
     const args = [

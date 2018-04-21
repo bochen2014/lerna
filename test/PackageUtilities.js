@@ -75,8 +75,7 @@ describe("PackageUtilities", () => {
     beforeAll(() =>
       initFixture("PackageUtilities/filtering").then(testDir => {
         packages = PackageUtilities.getPackages(new Repository(testDir));
-      })
-    );
+      }));
 
     it("includes all packages when --scope is omitted", () => {
       const flags = {
@@ -353,8 +352,7 @@ describe("PackageUtilities", () => {
       initFixture("PackageUtilities/cycles-and-repeated-deps").then(testDir => {
         packages = PackageUtilities.getPackages(new Repository(testDir));
         packageGraph = PackageUtilities.getPackageGraph(packages);
-      })
-    );
+      }));
 
     it("should add all transitive dependencies of passed in packages with no repeats", () => {
       // we need to start with one package and have it add the deps required

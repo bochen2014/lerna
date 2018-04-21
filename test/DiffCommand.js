@@ -33,8 +33,7 @@ describe("DiffCommand", () => {
       lernaDiff = run(testDir);
       GitUtilities.isInitialized.mockImplementation(() => true);
       GitUtilities.hasCommit.mockImplementation(() => true);
-    })
-  );
+    }));
   afterEach(() => jest.resetAllMocks());
 
   it("should diff packages from the first commit", async () => {

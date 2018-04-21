@@ -110,7 +110,7 @@ export default class GitUtilities {
     return firstCommit;
   }
 
-  //#######################################################################################################
+  // #######################################################################################################
   static pushWithTags(remote, tags, opts) {
     log.silly("pushWithTags", [remote, tags]);
     const branch = GitUtilities.getCurrentBranch(opts);
@@ -126,8 +126,8 @@ export default class GitUtilities {
     return lastTag;
   }
 
-  //#######################################################################################################
-  
+  // #######################################################################################################
+
   static describeTag(commit, opts) {
     log.silly("describeTag", commit);
 
@@ -142,8 +142,8 @@ export default class GitUtilities {
     log.silly("real diff; diff main loop", since, formattedLocation);
 
     // lerna detect changes; realdiff; real diff; lerna diff ; real diff mainloop; main loop; small loop
-    debugger; // git diff --name-only $(git describe --tag --abbrev=0) packates/your-folder-path
-    
+    // git diff --name-only $(git describe --tag --abbrev=0) packates/your-folder-path
+
     const diff = ChildProcessUtilities.execSync(
       "git",
       ["diff", "--name-only", since, "--", formattedLocation],

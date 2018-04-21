@@ -15,7 +15,7 @@
       - all
     max-len:
       - error
-      - 110   # keep in sync with .prettierrc.yaml printWidth
+      - 1100   # keep in sync with .prettierrc.yaml printWidth
       - 2
     node/no-unsupported-features:
       - error
@@ -36,3 +36,7 @@
     no-use-before-define:
       - error
       - nofunc
+    no-console:
+      - off
+    no-unused-expressions:
+      - off

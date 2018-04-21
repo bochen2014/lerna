@@ -359,7 +359,7 @@ export default class Command {
   }
 
   runCommand(callback) {
-    //mainloop; the main loop; outer most loop; initialize  -> execute; out most; outermost; 
+    // mainloop; the main loop; outer most loop; initialize  -> execute; out most; outermost;
     this._attempt(
       "initialize",
       () => {

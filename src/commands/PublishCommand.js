@@ -33,7 +33,7 @@ const cdVersionOptions = ["major", "minor", "patch", "premajor", "preminor", "pr
 
 const cdVersionOptionString = `'${cdVersionOptions.slice(0, -1).join("', '")}', or '${
   cdVersionOptions[cdVersionOptions.length - 1]
-  }'.`;
+}'.`;
 
 export const builder = {
   canary: {
@@ -145,8 +145,8 @@ export const builder = {
     group: "Command Options:",
     describe: "bochen:  debug conventional-recommended-bump.",
     type: "boolean",
-    default: false
-  }
+    default: false,
+  },
 };
 
 export default class PublishCommand extends Command {
@@ -175,7 +175,7 @@ export default class PublishCommand extends Command {
   }
 
   initialize(callback) {
-    debugger; // bump versoin main loop; first half; 'initialize'; 'execute' ; virtual method; abstract method; mainloop; main loop
+    // bump versoin main loop; first half; 'initialize'; 'execute' ; virtual method; abstract method; mainloop; main loop
 
     this.gitRemote = this.options.gitRemote || "origin";
     this.gitEnabled = !(this.options.canary || this.options.skipGit);
@@ -225,10 +225,9 @@ export default class PublishCommand extends Command {
       }
     }
 
-    //###################################################################################
-    this.updates = new UpdatedPackagesCollector(this).getUpdates();  // check updates
-    //###################################################################################
-
+    // ###################################################################################
+    this.updates = new UpdatedPackagesCollector(this).getUpdates(); // check updates
+    // ###################################################################################
 
     this.packagesToPublish = this.updates.map(update => update.package).filter(pkg => !pkg.isPrivate());
 
@@ -236,18 +235,18 @@ export default class PublishCommand extends Command {
     try {
       this.batchedPackagesToPublish = this.toposort
         ? PackageUtilities.topologicallyBatchPackages(this.packagesToPublish, {
-          // Don't sort based on devDependencies because that would increase the chance of dependency cycles
-          // causing less-than-ideal a publishing order.
-          depsOnly: true,
-          rejectCycles: this.options.rejectCycles,
-        })
+            // Don't sort based on devDependencies because that would increase the chance of dependency cycles
+            // causing less-than-ideal a publishing order.
+            depsOnly: true,
+            rejectCycles: this.options.rejectCycles,
+          })
         : [this.packagesToPublish];
     } catch (e) {
       return callback(e);
     }
 
     if (!this.updates.length) {
-      debugger; // no changes to publish
+      // no changes to publish
       this.logger.info("No updated packages to publish.");
       callback(null, false);
       return;
@@ -255,17 +254,15 @@ export default class PublishCommand extends Command {
 
     // ######################################################
     // we have got packages that need bump, now verion bump starts (will delegat to conventional-recommended-bump)
-    debugger;
 
     this.getVersionsForUpdates(this.afterVersionBumped.bind(this), callback);
-
   }
 
-  afterVersionBumped(err,
-    { version /*fixed version*/, versions /*independent*/ },
-    onInitComplete /*init: bump ver ; exec: git add/commit/tag + npm publish */) {
-
-    debugger;
+  afterVersionBumped(
+    err,
+    { version /* fixed version */, versions /* independent */ },
+    onInitComplete /* init: bump ver ; exec: git add/commit/tag + npm publish */
+  ) {
     if (err) {
       onInitComplete(err);
       return;
@@ -280,47 +277,47 @@ export default class PublishCommand extends Command {
       }, {});
 
     this.confirmVersions(onInitComplete);
-  };
+  }
 
   execute(callback) {
-    //###################################################################################
+    // ###################################################################################
     // this is the real callback passed to `initialize` (i.e. version bump main loop; first half)
     // note that this is a overridden of parent class 's abstract method;
     // tag mainloop; main loop; mainloop3; second half ; git commit ; git tag
-    debugger; // git add . => git commit /git tag => npm publish => git push && git push origin --tags
-
+    // git add . => git commit /git tag => npm publish => git push && git push origin --tags
 
     if (!this.repository.isIndependent() && !this.options.canary) {
       this.updateVersionInLernaJson();
     }
 
-    //#####################################################
+    // #####################################################
     // package.json and CHANGELOG.md are git added here;
-    this.updateUpdatedPackages();  // git add . 
-    //######################################################
+    this.updateUpdatedPackages(); // git add .
+    // ######################################################
 
-    if (this.gitEnabled) {  //     this.gitEnabled = !(this.options.canary || this.options.skipGit);
+    if (this.gitEnabled) {
+      //     this.gitEnabled = !(this.options.canary || this.options.skipGit);
       this.commitAndTagUpdates(); // git commit && git tag xxx
     }
 
     if (this.options.skipNpm) {
       callback(null, true);
     } else {
-      this.publishPackagesToNpmAndPushGit2Origin(callback);  // npm publish && git push
+      this.publishPackagesToNpmAndPushGit2Origin(callback); // npm publish && git push
     }
   }
 
   publishPackagesToNpmAndPushGit2Origin(callback) {
     this.logger.info("publish", "Publishing packages to npm...");
-    
-    //################################# git push ##########################################
+
+    // ################################# git push ##########################################
     if (this.gitEnabled) {
-      debugger; // git push inside npmPublish function. REALLY BAD NAMING!!!!
+      // git push inside npmPublish function. REALLY BAD NAMING!!!!
       this.logger.info("git", "git push pushWithTags begin  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
       GitUtilities.pushWithTags(this.gitRemote, this.tags, this.execOpts);
       this.logger.info("git", "git push pushWithTags finish <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-      
-      //##################################################################################
+
+      // ##################################################################################
     }
 
     this.logger.info("publish", "Publishing packages to npm...");
@@ -378,12 +375,17 @@ export default class PublishCommand extends Command {
       return callback(null, { version }, onInitComplete);
     }
 
-    debugger;  //main loop; real bump loop; here is the starting point of real versoin bump;
+    // main loop; real bump loop; here is the starting point of real versoin bump;
 
-    if (repoVersion) {  // --repo-version 0.1000.0
-      return callback(null, {
-        version: repoVersion,
-      }, onInitComplete);
+    if (repoVersion) {
+      // --repo-version 0.1000.0
+      return callback(
+        null,
+        {
+          version: repoVersion,
+        },
+        onInitComplete
+      );
     }
 
     if (canary) {
@@ -403,13 +405,14 @@ export default class PublishCommand extends Command {
       return callback(null, { version }, onInitComplete);
     }
 
-    if (conventionalCommits) { //common-ui case;
+    if (conventionalCommits) {
+      // common-ui case;
       if (independentVersions) {
         // Independent Conventional-Commits Mode
         const versions = {};
         this.recommendVersions(
           this.updates, // packages that lerna thinks need to be bumped;
-          ConventionalCommitUtilities.recommendIndependentVersion /* the functor here is real worker function*/,
+          ConventionalCommitUtilities.recommendIndependentVersion /* the functor here is real worker function */,
           versionBump => {
             // here is where the version got bumped!!
             versions[versionBump.pkg.name] = versionBump.recommendedVersion;
@@ -420,7 +423,7 @@ export default class PublishCommand extends Command {
       }
 
       // react-gel case; fixed version pattern;
-      const currentFixedVersion = this.repository.lernaJson.version; //fixed version case, read from `lerna.json` file;
+      const currentFixedVersion = this.repository.lernaJson.version; // fixed version case, read from `lerna.json` file;
 
       this.updates.forEach(update => {
         const pkg = update.package;
@@ -474,10 +477,12 @@ export default class PublishCommand extends Command {
     }
   }
 
-  recommendVersions(updates,
+  recommendVersions(
+    updates,
     // go to ConventionalCommitUtilities to see conventional-recommended-bump wrapper;
-    recommendVersionFn /*either RecommendFixedVersion or RecommendIndepedentVersion*/,
-    callback) {
+    recommendVersionFn /* either RecommendFixedVersion or RecommendIndepedentVersion */,
+    callback
+  ) {
     updates.forEach(update => {
       const pkg = {
         name: update.package.name,
@@ -485,15 +490,14 @@ export default class PublishCommand extends Command {
         location: update.package.location,
       };
 
-
-      this.changelogOpts['debug-bump'] == this.options['debug-bump'];
+      this.changelogOpts["debug-bump"] = this.options["debug-bump"];
       const recommendedVersion = recommendVersionFn(pkg, this.changelogOpts);
       callback({ pkg, recommendedVersion });
     });
   }
 
   // this is how canary version is calculated;
-  // canary loop; small loop; canary new version; github issues;  .preid; _preid; "preid", 'preid' , 'minor' , "minor", 
+  // canary loop; small loop; canary new version; github issues;  .preid; _preid; "preid", 'preid' , 'minor' , "minor",
   getCanaryVersion(version, _preid) {
     // FIXME: this complicated defaulting should be done in yargs option.coerce()
     const preid = _preid == null || typeof _preid !== "string" ? "alpha" : _preid;
@@ -553,7 +557,7 @@ export default class PublishCommand extends Command {
             const defaultVersion = semver.inc(currentVersion, "prerelease", existingId);
             const prompt = `(default: ${
               existingId ? `"${existingId}"` : "none"
-              }, yielding ${defaultVersion})`;
+            }, yielding ${defaultVersion})`;
 
             // TODO: allow specifying prerelease identifier as CLI option to skip the prompt
             PromptUtilities.input(
