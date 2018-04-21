@@ -122,7 +122,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should publish the changed packages", () =>
       run(testDir)().then(() => {
@@ -175,7 +176,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/independent").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should publish the changed packages in independent mode", () => {
       const promptReplies = ["1.0.1", "1.1.0", "2.0.0", "1.1.0", "1.0.1"];
@@ -228,7 +230,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should publish the changed packages", () =>
       run(testDir)("--canary").then(() => {
@@ -304,7 +307,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/independent").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should publish the changed packages", () =>
       run(testDir)("--canary").then(() => {
@@ -354,7 +358,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should publish the changed packages", () =>
       run(testDir)("--skip-git").then(() => {
@@ -377,7 +382,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should update versions and push changes but not publish", () =>
       run(testDir)("--skip-npm").then(() => {
@@ -402,7 +408,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should update versions but not push changes or publish", () =>
       run(testDir)("--skip-git", "--skip-npm").then(() => {
@@ -446,7 +453,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should publish the changed packages with a temp tag", () =>
       run(testDir)("--temp-tag").then(() => {
@@ -468,7 +476,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should publish the changed packages with npm tag", () =>
       run(testDir)("--npm-tag", "custom").then(() => {
@@ -512,7 +521,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("passes registry to npm commands", () => {
       const registry = "https://my-private-registry";
@@ -537,7 +547,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("skips version prompt and publishes changed packages with designated version", () =>
       run(testDir)("--repo-version", "1.0.1-beta").then(() => {
@@ -556,7 +567,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("updates matching local dependencies of published packages with exact versions", () =>
       run(testDir)("--exact").then(() => {
@@ -587,7 +599,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should use semver increments when passed to cdVersion flag", () =>
       run(testDir)("--cd-version", "minor").then(() => {
@@ -659,7 +672,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/independent").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should use semver increments when passed to cdVersion flag", () =>
       run(testDir)("--cd-version", "patch").then(() => {
@@ -716,7 +730,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("pushes tags to specified remote", () =>
       run(testDir)("--git-remote", "upstream").then(() => {
@@ -734,7 +749,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("does not publish ignored packages", () =>
       run(testDir)("--ignore", "package-2", "--ignore", "package-3", "--ignore", "package-4").then(() => {
@@ -753,7 +769,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/normal").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("commits changes with a custom message using %s", () =>
       run(testDir)("--message", "chore: Release %s :rocket:").then(() => {
@@ -776,7 +793,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/independent").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("commits changes with a custom message", () =>
       run(testDir)("-m", "chore: Custom publish message").then(() => {
@@ -961,7 +979,8 @@ describe("PublishCommand", () => {
     beforeEach(() =>
       initFixture("PublishCommand/independent").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("should publish the changed packages", () =>
       run(testDir)("--canary", "--npm-tag", "next", "--yes", "--exact").then(() => {

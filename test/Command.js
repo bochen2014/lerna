@@ -119,7 +119,8 @@ describe("Command", () => {
     beforeAll(() =>
       initFixture("Command/basic").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     it("returns a Promise", async () => {
       await new OkCommand([], {}, testDir).run();
@@ -270,7 +271,8 @@ describe("Command", () => {
       beforeEach(() =>
         initFixture("UpdatedCommand/basic").then(dir => {
           testDir = dir;
-        }));
+        })
+      );
 
       it("--scope should filter packages", async () => {
         const { filteredPackages } = await run({ scope: ["package-2", "package-4"] });
@@ -338,7 +340,8 @@ describe("Command", () => {
     beforeAll(() =>
       initFixture("Command/basic").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     class TestACommand extends Command {}
     class TestBCommand extends Command {}
@@ -423,7 +426,8 @@ describe("Command", () => {
     beforeAll(() =>
       initFixture("Command/legacy").then(dir => {
         testDir = dir;
-      }));
+      })
+    );
 
     class TestCommand extends Command {}
 
