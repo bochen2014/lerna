@@ -69,10 +69,10 @@ export default class UpdatedPackagesCollector {
     let { since } = options;
 
     if (GitUtilities.hasTags(execOpts)) {
-      if (canary) {
+      if (canary) { // canary only cares about the last commit; $(git diff --name-only lastCommit^..lastCommit) => determines which packages nees to be bumped;
         const currentSHA = GitUtilities.getCurrentSHA(execOpts);
 
-        since = this.getAssociatedCommits(currentSHA);
+        since = this.getAssociatedCommits(currentSHA); // GHEAD=$(git rev-parse HEAD | cut -c -8); since=GHEAD^..GHEAD
       } else if (!since) {
         since = GitUtilities.getLastTag(execOpts); // git describe --tag --abbrev=0
       }
