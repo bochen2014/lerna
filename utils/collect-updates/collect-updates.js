@@ -44,16 +44,18 @@ function collectUpdates({
   const forced = getForcedPackages(forcePublish);
   let candidates;
 
+  // main loop; detect loop;
   if (!committish || forced.has("*")) {
     candidates = new Set(packages.values());
   } else {
     candidates = new Set();
 
     const hasDiff = makeDiffPredicate(committish, execOpts, ignoreChanges);
-    const needsBump = (cdVersion || "").startsWith("pre")
-      ? () => false
+    const needsBump = (cdVersion || "").startsWith("pre") // if I'm in a "pre" release
+      ? () => false // then no one need to force bump
       : /* skip packages that have not been previously prereleased */
-        node => semver.prerelease(node.version);
+        node => semver.prerelease(node.version);  // if I"m not in a 'pre' release (i.e. I'm in a normal release), and if current version is pre-release version, 
+          // then it needs to be graduated; i.e. a normal release won't contain any pre-release package verions;
 
     packages.forEach((node, name) => {
       if (forced.has(name) || needsBump(node) || hasDiff(node)) {
@@ -65,6 +67,9 @@ function collectUpdates({
   const dependents = collectDependents(candidates);
   dependents.forEach(node => candidates.add(node));
 
+  // candiates.size <= packages.size;
+  // candiate is a subset of packages, it contains all bump-required packages (either has a change, or need to graduate, or is forced), plus all pakcages that depends on them
+  // packages is `packages/**`
   if (canary || packages.size === candidates.size) {
     logger.verbose("updated", "(short-circuit)");
 
