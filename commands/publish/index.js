@@ -33,6 +33,7 @@ const gitCommit = require("./lib/git-commit");
 const gitPush = require("./lib/git-push");
 const gitTag = require("./lib/git-tag");
 const isBehindUpstream = require("./lib/is-behind-upstream");
+const isBreakingChange = require("./lib/is-breaking-change");
 
 module.exports = factory;
 
@@ -147,7 +148,33 @@ class PublishCommand extends Command {
     const tasks = [
       () => this.getVersionsForUpdates(),
       versions => {
-        this.updatesVersions = versions;
+        if (
+          this.project.isIndependent() ||
+          versions.size === this.filteredPackages.size ||
+          this.options.canary
+        ) {
+          // independent, force-publish=*, or canary, we don't bump all
+          this.updatesVersions = versions;
+        } else {
+          let hasBreakingChange;
+
+          for (const [name, bump] of versions) {
+            hasBreakingChange =
+              hasBreakingChange || isBreakingChange(this.packageGraph.get(name).version, bump);
+          }
+
+          if (hasBreakingChange) {
+            const packages =
+              this.filteredPackages.length === this.packageGraph.size
+                ? this.packageGraph
+                : new Map(this.filteredPackages.map(({ name }) => [name, this.packageGraph.get(name)]));
+
+            this.updates = Array.from(packages.values());
+            this.updatesVersions = new Map(this.updates.map(({ name }) => [name, this.globalVersion]));
+          } else {
+            this.updatesVersions = versions;
+          }
+        }
       },
       () => this.confirmVersions(),
     ];
