@@ -67,7 +67,6 @@ function collectUpdates({
   const dependents = collectDependents(candidates);
   dependents.forEach(node => candidates.add(node));
 
-<<<<<<< HEAD
   // candiates.size <= packages.size;
   // candiate is a subset of packages, it contains all bump-required packages (either has a change, or need to graduate, or is forced), plus all pakcages that depends on them
   // packages is `packages/**`
@@ -77,9 +76,6 @@ function collectUpdates({
     return Array.from(candidates);
   }
 
-=======
-  // The result should always be in the same order as the input
->>>>>>> ce5c4842e5c927beaa13779c6429a8d7c5b5a933
   const updates = [];
 
   packages.forEach((node, name) => {
