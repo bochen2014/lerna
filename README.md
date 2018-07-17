@@ -1,3 +1,5 @@
+RE: tony W, what caused the infinite loop? 
+
 step 1:  `git diff --name-only (git describe --tag --abbrev=0) packages/guided-learning`
 packages/guided-learning/src/redux/reducers/guided-learning.reducer.js
 packages/guided-learning/src/redux/sagas/guided-learning.saga.js
